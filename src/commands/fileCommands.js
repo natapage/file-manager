@@ -1,11 +1,15 @@
 import { promises as fs } from 'fs';
 import { createReadStream, createWriteStream } from 'fs';
 import { basename, resolve } from 'path';
-import { fileExists } from '../utils/validators.js';
+import { checkFileExists, checkArgsExist } from '../utils/validators.js';
 import * as logger from '../utils/logger.js';
 
 export async function readFile(path) {
-    if (!(await fileExists(path))) {
+    if (!checkArgsExist([path])) {
+        logger.printInputError();
+        return;
+    }
+    if (!(await checkFileExists(path))) {
         logger.printOperationError();
         return;
     }
@@ -15,6 +19,10 @@ export async function readFile(path) {
 }
 
 export async function createFile(name) {
+    if (!checkArgsExist([name])) {
+        logger.printInputError();
+        return;
+    }
     try {
         await fs.writeFile(name, '', { flag: 'wx' });
     } catch {
@@ -23,7 +31,11 @@ export async function createFile(name) {
 }
 
 export async function renameFile(filePath, newName) {
-    if (!(await fileExists(filePath))) {
+    if (!checkArgsExist([filePath, newName])) {
+        logger.printInputError();
+        return;
+    }
+    if (!(await checkFileExists(filePath))) {
         logger.printOperationError();
         return;
     }
@@ -35,7 +47,11 @@ export async function renameFile(filePath, newName) {
 }
 
 export async function deleteFile(path) {
-    if (!(await fileExists(path))) {
+    if (!checkArgsExist([path])) {
+        logger.printInputError();
+        return;
+    }
+    if (!(await checkFileExists(path))) {
         logger.printOperationError();
         return;
     }
@@ -43,14 +59,18 @@ export async function deleteFile(path) {
 }
 
 export async function copyFile(source, destination) {
-    if (!(await fileExists(source))) {
+    if (!checkArgsExist([source, destination])) {
+        logger.printInputError();
+        return;
+    }
+    if (!(await checkFileExists(source))) {
         logger.printOperationError();
         return;
     }
 
     const destinationPath = resolve(destination, basename(source));
     const readStream = createReadStream(source);
-    const writeStream = createWriteStream(destinationPath);
+    const writeStream = createWriteStream(destinationPath, { flags: 'wx' });
 
     return new Promise((resolve, reject) => {
         readStream.on('error', reject);
@@ -61,7 +81,11 @@ export async function copyFile(source, destination) {
 }
 
 export async function moveFile(source, destination) {
-    if (!(await fileExists(source))) {
+    if (!checkArgsExist([source, destination])) {
+        logger.printInputError();
+        return;
+    }
+    if (!(await checkFileExists(source))) {
         logger.printOperationError();
         return;
     }

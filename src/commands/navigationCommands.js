@@ -2,6 +2,7 @@ import { chdir, cwd } from 'process';
 import { resolve, dirname } from 'path';
 import { mkdir } from 'fs/promises';
 import * as logger from '../utils/logger.js';
+import { checkArgsExist } from '../utils/validators.js';
 
 export function up() {
     const currentDir = cwd();
@@ -12,6 +13,11 @@ export function up() {
 }
 
 export async function changeDirectory(path) {
+    if (!checkArgsExist([path])) {
+        logger.printInputError();
+        return;
+    }
+
     try {
         const newPath = resolve(cwd(), path);
         chdir(newPath);
@@ -40,6 +46,10 @@ export async function listDirectory() {
 }
 
 export async function createDirectory(directoryName) {
+    if (!checkArgsExist([directoryName])) {
+        logger.printInputError();
+        return;
+    }
     try {
         const newPath = resolve(cwd(), directoryName);
         await mkdir(newPath);
