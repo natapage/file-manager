@@ -1,0 +1,21 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "This repository is dedicated to implementing a File Manager using Node.js APIs",
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "url": "https://github.com/natapage/file-manager"
+  },
+  "keywords": [
+    "nodejs",
+    "assignments",
+    "file-manager"
+  ],
+  "author": "natapage"
+}
